@@ -1,0 +1,374 @@
+[
+    {
+        "name": "Еда и напитки",
+        "key": "food",
+        "color": "#FF0000",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Бар, кафе",
+                "key": "bar_cafe"
+            },
+            {
+                "name": "Продукты",
+                "key": "products"
+            },
+            {
+                "name": "Ресторан, фаст-фуд",
+                "key": "restaurant_fastfood"
+            }
+        ]
+    },
+    {
+        "name": "Покупки",
+        "key": "shopping",
+        "color": "#0088ff",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Аптека",
+                "key": "pharmacy"
+            },
+            {
+                "name": "Дети",
+                "key": "children"
+            },
+            {
+                "name": "Дом и сад",
+                "key": "home_garden"
+            },
+            {
+                "name": "Домашние животные",
+                "key": "pets"
+            },
+            {
+                "name": "Инструменты",
+                "key": "tools"
+            },
+            {
+                "name": "Красота и здоровье",
+                "key": "beauty_health"
+            },
+            {
+                "name": "Одежда и обувь",
+                "key": "clothes_shoes"
+            },
+            {
+                "name": "Отдых",
+                "key": "rest"
+            },
+            {
+                "name": "Подарки, праздники",
+                "key": "gifts_holidays"
+            },
+            {
+                "name": "Украшения, аксессуары",
+                "key": "jewelry"
+            },
+            {
+                "name": "Электроника, аксессуары",
+                "key": "electronics"
+            }
+        ]
+    },
+    {
+        "name": "Жилье",
+        "key": "housing",
+        "color": "#ffa726",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Аренда",
+                "key": "rent_house"
+            },
+            {
+                "name": "Ипотека",
+                "key": "mortgage"
+            },
+            {
+                "name": "Ремонт",
+                "key": "repair"
+            },
+            {
+                "name": "Страхование имущества",
+                "key": "insurance_house"
+            },
+            {
+                "name": "Услуги",
+                "key": "services"
+            },
+            {
+                "name": "Электричество, коммунальные услуги",
+                "key": "utilities"
+            }
+        ]
+    },
+    {
+        "name": "Транспорт",
+        "key": "transport",
+        "color": "#78909c",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Дальние поездки",
+                "key": "long_trips"
+            },
+            {
+                "name": "Деловые поездки",
+                "key": "business_trips"
+            },
+            {
+                "name": "Общественный транспорт",
+                "key": "public_transport"
+            },
+            {
+                "name": "Такси",
+                "key": "taxi"
+            }
+        ]
+    },
+    {
+        "name": "Автомобиль",
+        "key": "car",
+        "color": "#a0f",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Аренда",
+                "key": "rent_car"
+            },
+            {
+                "name": "Лизинг",
+                "key": "leasing"
+            },
+            {
+                "name": "Парковка",
+                "key": "parking"
+            },
+            {
+                "name": "Страхование транспорта",
+                "key": "insurance_car"
+            },
+            {
+                "name": "Техобслуживание",
+                "key": "maintenance"
+            },
+            {
+                "name": "Топливо",
+                "key": "fuel"
+            }
+        ]
+    },
+    {
+        "name": "Развлечения и досуг",
+        "key": "entertainment",
+        "color": "#64dd17",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Алкоголь, табак",
+                "key": "alcohol_tobacco"
+            },
+            {
+                "name": "Книги, аудио, подписки",
+                "key": "books_audio_subscriptions"
+            },
+            {
+                "name": "Культура и спорт",
+                "key": "culture_sport"
+            },
+            {
+                "name": "Лечение",
+                "key": "treatment"
+            },
+            {
+                "name": "Лотереи, азартные игры",
+                "key": "lotteries_gambling"
+            },
+            {
+                "name": "Образование, развитие",
+                "key": "education_development"
+            },
+            {
+                "name": "Оздоровительные процедуры, красота",
+                "key": "health_beauty"
+            },
+            {
+                "name": "Отпуск, поездки, отели",
+                "key": "vacation_trips_hotels"
+            },
+            {
+                "name": "Подарки и благотворительность",
+                "key": "gifts_charity"
+            },
+            {
+                "name": "Праздники",
+                "key": "holidays"
+            },
+            {
+                "name": "Спорт, Фитнес",
+                "key": "sport_fitness"
+            },
+            {
+                "name": "ТВ и вещание",
+                "key": "tv_broadcasting"
+            },
+            {
+                "name": "Хобби",
+                "key": "hobby"
+            }
+        ]
+    },
+    {
+        "name": "Связь, ПК",
+        "key": "communication",
+        "color": "#536dfe",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Интернет",
+                "key": "internet"
+            },
+            {
+                "name": "Почтовые услуги",
+                "key": "mail_services"
+            },
+            {
+                "name": "Программы, игры",
+                "key": "programs_games"
+            },
+            {
+                "name": "Телефон",
+                "key": "phone"
+            }
+        ]
+    },
+    {
+        "name": "Финансовые расходы",
+        "key": "financial",
+        "color": "#00bfa5",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Алименты",
+                "key": "alimony_expense"
+            },
+            {
+                "name": "Займы, проценты",
+                "key": "loans_interests"
+            },
+            {
+                "name": "Консультация",
+                "key": "consultation"
+            },
+            {
+                "name": "Налоги",
+                "key": "taxes"
+            },
+            {
+                "name": "Сборы, платы",
+                "key": "fees"
+            },
+            {
+                "name": "Страхование",
+                "key": "insurance"
+            },
+            {
+                "name": "Штрафы",
+                "key": "fines"
+            }
+        ]
+    },
+    {
+        "name": "Инвестиции",
+        "key": "investments",
+        "color": "#ff4081",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Инвестиции",
+                "key": "investments"
+            },
+            {
+                "name": "Коллекции",
+                "key": "collections"
+            },
+            {
+                "name": "Недвижимость",
+                "key": "real_estate"
+            },
+            {
+                "name": "Сбережения",
+                "key": "savings"
+            },
+            {
+                "name": "Транспортные средства, движимое имущество",
+                "key": "vehicles"
+            }
+        ]
+    },
+    {
+        "name": "Доход",
+        "key": "income",
+        "color": "#fbc02d",
+        "type": "income",
+        "children": [
+            {
+                "name": "Алименты",
+                "key": "alimony_income"
+            },
+            {
+                "name": "Взносы и гранты",
+                "key": "contributions_grants"
+            },
+            {
+                "name": "Возврат денег (налог, покупка)",
+                "key": "money_return"
+            },
+            {
+                "name": "Доход от аренды",
+                "key": "rental_income"
+            },
+            {
+                "name": "Зарплата, счета-фактуры",
+                "key": "salary_invoices"
+            },
+            {
+                "name": "Кредит, аренда",
+                "key": "credit_rent"
+            },
+            {
+                "name": "Лотереи, азартные игры",
+                "key": "lotteries_gambling"
+            },
+            {
+                "name": "Подарки",
+                "key": "gifts"
+            },
+            {
+                "name": "Продажа",
+                "key": "sale"
+            },
+            {
+                "name": "Проценты, дивиденты",
+                "key": "interests_dividends"
+            },
+            {
+                "name": "Чеки, купоны",
+                "key": "checks_coupons"
+            }
+        ]
+    },
+    {
+        "name": "Прочее",
+        "key": "other",
+        "color": "#9e9e9e",
+        "type": "expense",
+        "children": [
+            {
+                "name": "Неизвестно",
+                "key": "unknown"
+            }
+        ]
+    }
+]
