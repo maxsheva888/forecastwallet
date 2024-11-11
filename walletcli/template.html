@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root {
+            --background: #282a36;
+            --current-line: #44475a;
+            --selection: #44475a;
+            --foreground: #f8f8f2;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+        }
+
+        body {
+            background-color: var(--background);
+            margin: 0;
+            padding: 20px;
+            font-family: 'Ubuntu Mono', monospace;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .terminal {
+            background-color: var(--background);
+            height: calc(100% - 8px);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: var(--current-line);
+            padding: 8px;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 6px;
+            margin-right: 10px;
+        }
+
+        .window-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .close { background-color: var(--red); }
+        .minimize { background-color: var(--yellow); }
+        .maximize { background-color: var(--green); }
+
+        .terminal-title {
+            color: var(--foreground);
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .terminal-content {
+            padding: 10px;
+            color: var(--foreground);
+            height: calc(100% - 35px);
+            overflow-y: auto;
+        }
+
+        .prompt {
+            color: var(--green);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt span.user { color: var(--green); }
+        .prompt span.at { color: var(--foreground); }
+        .prompt span.host { color: var(--green); }
+        .prompt span.path { color: var(--purple); }
+        .prompt span.symbol { color: var(--pink); margin: 0 5px; }
+
+        .command-input {
+            background: transparent;
+            border: none;
+            color: var(--foreground);
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            width: 2px;
+            caret-color: transparent;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .output {
+            margin: 10px 0;
+            line-height: 1.3;
+            white-space: pre-wrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: var(--current-line);
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+
+        .progress {
+            width: 75%;
+            height: 20px;
+            background-color: var(--green);
+            border-radius: 3px;
+            position: relative;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        .table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .table th, .table td {
+            border: 1px solid var(--current-line);
+            padding: 5px 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: var(--current-line);
+            color: var(--purple);
+        }
+
+        .error-text { color: var(--red); }
+        .success-text { color: var(--green); }
+        .warning-text { color: var(--orange); }
+        .info-text { color: var(--cyan); }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 75%; }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--green);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--foreground);
+            animation: blink 1s infinite;
+            margin-left: 1px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .output-line {
+            margin: 2px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-content" id="terminal-content">
+            <div class="output info-text">Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage</div>
+            <div id="command-history"></div>
+            <div class="prompt" id="current-prompt">
+                <span class="user">user</span><span class="at">@</span><span class="host">ubuntu</span><span class="symbol">:</span><span class="path">~</span><span class="symbol">$</span>
+                <input type="text" class="command-input" id="command-input" autofocus spellcheck="false">
+                <div id="cursor"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const commandInput = document.getElementById('command-input');
+        const terminalContent = document.getElementById('terminal-content');
+        const commandHistory = document.getElementById('command-history');
+        const currentPrompt = document.getElementById('current-prompt');
+
+        let commandStack = [];
+        let currentCommandIndex = -1;
+
+        const commands = {
+            'clear': () => {
+                commandHistory.innerHTML = '';
+                return '';
+            },
+            'ls': () => {
+                return 'Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos';
+            },
+            'pwd': () => {
+                return '/home/user';
+            },
+            'date': () => {
+                return new Date().toString();
+            },
+            'whoami': () => {
+                return 'user';
+            },
+            'help': () => {
+                return 'Available commands: clear, ls, pwd, date, whoami, help, echo, apt, npm';
+            },
+            'echo': (args) => {
+                return args.join(' ');
+            },
+            'apt': (args) => {
+                if (args[0] === 'update') {
+                    return `Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+All packages are up to date.`;
+                }
+                return 'Usage: apt update|upgrade|install|remove [package]';
+            },
+            'npm': (args) => {
+                if (args[0] === 'install') {
+                    return `+ typescript@4.4.3
++ react@17.0.2
+added 1284 packages in 32s`;
+                }
+                return 'Usage: npm install|update|remove [package]';
+            }
+        };
+
+        function createOutputElement(content, type = '') {
+            const output = document.createElement('div');
+            output.className = 'output ' + type;
+            output.textContent = content;
+            return output;
+        }
+
+        function createPromptElement(command) {
+            const prompt = currentPrompt.cloneNode(true);
+            prompt.removeAttribute('id');
+            const input = prompt.querySelector('.command-input');
+            input.value = command;
+            input.readOnly = true;
+            prompt.querySelector('#cursor').remove();
+            return prompt;
+        }
+
+        function executeCommand(commandStr) {
+            const [cmd, ...args] = commandStr.trim().split(' ');
+            
+            if (cmd === '') return;
+            
+            if (cmd in commands) {
+                const output = commands[cmd](args);
+                if (output !== '') {
+                    commandHistory.appendChild(createOutputElement(output));
+                }
+            } else {
+                commandHistory.appendChild(createOutputElement(`Command '${cmd}' not found. Type 'help' for available commands.`, 'error-text'));
+            }
+        }
+
+        commandInput.addEventListener('input', () => {
+            commandInput.style.width = (commandInput.value.length) * 7.8  + 'px';
+        });
+
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value;
+                
+                if (command.trim() !== '') {
+                    commandStack.push(command);
+                    currentCommandIndex = commandStack.length;
+                    
+                    const promptCopy = createPromptElement(command);
+                    commandHistory.appendChild(promptCopy);
+                    
+                    executeCommand(command);
+                }
+                
+                commandInput.value = '';
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentCommandIndex > 0) {
+                    currentCommandIndex--;
+                    commandInput.value = commandStack[currentCommandIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (currentCommandIndex < commandStack.length - 1) {
+                    currentCommandIndex++;
+                    commandInput.value = commandStack[currentCommandIndex];
+                } else {
+                    currentCommandIndex = commandStack.length;
+                    commandInput.value = '';
+                }
+            }
+        });
+
+        // Автофокус на поле ввода при клике в любом месте терминала
+        terminalContent.addEventListener('click', () => {
+            commandInput.focus();
+        });
+
+        // Инициализация фокуса
+        commandInput.focus();
+    </script>
+</body>
+</html>

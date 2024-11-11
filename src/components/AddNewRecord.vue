@@ -9,7 +9,7 @@
                 </div>
             </template>
         </a-segmented>
-        <a-input-number ref="inputValue" v-model:value="amount" autofocus @change="tryAmountChange"/>
+        <a-input-number ref="inputValue" v-model:value="amount" autofocus/>
         <a-input v-model:value="description" placeholder="Описание" style="max-width: 200px;"/>
         <a-date-picker v-model:value="date" :format="dateFormat" />
         <a-button type="primary">
@@ -24,13 +24,13 @@
 <script lang="ts" setup>
 import dayjs, { Dayjs } from 'dayjs';
 import { ref, watch, useTemplateRef } from 'vue';
-import { RecordType } from '../api/db.js';
+import { type RecordType } from '../api/types';
 import { MinusOutlined, PlusOutlined, EnterOutlined } from '@ant-design/icons-vue';
 
 const emit = defineEmits(['addRecord']);
 
 const dateFormat = 'DD/MM/YYYY';
-const inputRef = useTemplateRef('inputValue');
+const inputRef = useTemplateRef<HTMLOrSVGElement>('inputValue');
 
 const type = ref<RecordType>('expense');
 const amount = ref<number | null>(null);
@@ -65,9 +65,11 @@ const types = ref([
     },
 ]);
 
-const setInputFocused = (value: boolen = true) => {
+const setInputFocused = (value: boolean = true) => {
     !value && inputRef.value?.blur() ||
         inputRef.value?.focus()
+
+    return true;
 };
 
 const typeChange = (value: RecordType) => {
@@ -96,7 +98,7 @@ document.addEventListener('keydown', (event) => {
             type: type.value,
             amount: Math.abs(amount.value),
             currencu: 'PLN',
-            category: 'Other',
+            category: 'other',
             date: date.value.format(dateFormat),
             description: description.value,
         });
@@ -113,6 +115,3 @@ const resetForm = () => {
 };
 
 </script>
-
-<style scoped>
-</style>

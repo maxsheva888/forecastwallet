@@ -4,35 +4,19 @@
             <AddNewRecord @add-record="addNewRecordEvent" />
             <a-divider />
         </a-col>
+        <context-holder />
     </a-row>
     <a-row>
         <a-col :span="24">
-            total: {{ total }}
-            <br />
             <a-list
-                :data-source="records.records"
+                :data-source="records"
             >
-                <template #renderItem="{ item }">
-                    <a-list-item>
-                        <a-list-item-meta
-                            :title="item.description"
-                            :description="item.date"
-                        />
-                        <a-statistic
-                            :value="item.amount"
-                            :prefix="item.type === 'expense' ? '-' : ''"
-                            :value-style="{ color: item.type === 'expense' ? '#cf1322' : '#3f8600' }"
-                            suffix="zl"
-                        />
-                        <template #actions>
-                            <a-button
-                                danger
-                                @click="removeRecordEvent(item)"
-                            >
-                                <template #icon><DeleteOutlined /></template>
-                            </a-button>
-                        </template>
-                    </a-list-item>
+                <template #renderItem="{item, index}">
+                    <RecordListItem
+                        :record="records[index]"
+                        @remove-record="removeRecordEvent"
+                        @change-category="changeRecordCategoryEvent"
+                    />
                 </template>
             </a-list>
         </a-col>
@@ -40,53 +24,36 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, reactive, watch } from 'vue';
+    import { ref } from 'vue';
     import { liveQuery } from "dexie";
     import { useObservable } from '@vueuse/rxjs';
-    import { Empty } from 'ant-design-vue';
-    import { addRecord, getRecords, totalRecords, deleteRecord, Record, getCountInList } from '../api/db';
-    import AddNewRecord from '../components/AddNewRecord.vue';
-    import { DeleteOutlined } from '@ant-design/icons-vue';
+    import { addRecord, getRecords, deleteRecord, changeRecordCategory, type Record } from '../api/db';
+    import AddNewRecord from './AddNewRecord.vue';
     import { message } from 'ant-design-vue';
+    import RecordListItem from './RecordListItem.vue';
 
-    const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
+    const [messageApi, contextHolder] = message.useMessage({ maxCount: 1, duration: 2 });
 
-    const loading = ref<boolen>(false);
-    const total = ref<number>(useObservable(
-        liveQuery(totalRecords)
+    const records = ref<Record[]>(useObservable(
+        liveQuery(getRecords)
     ));
 
-    const records = reactive<{ total: number, records: Record[] }>({
-        records: useObservable(
-            liveQuery(getRecords)
-        )
-    });
 
-    const addNewRecordEvent = async (record: Record) => {
-        console.log(record);
+    const addNewRecordEvent = (record: Record) => {
         addRecord(record).then(() => {
-            showNotification('create', record)
+            messageApi.success(`${record.type == 'income' ? 'Доход ' : 'Расход -'}${record.amount} добавлен!`)
         });
     };
 
-    const removeRecordEvent = async (record: Record) => {
-        await deleteRecord(record.id);
-        showNotification('delete', record);
+    const removeRecordEvent = (record: Record) => {
+        deleteRecord(record.id).then(() => {
+            messageApi.success(`${record.type == 'income' ? 'Доход ' : 'Расход -'}${record.amount} удален!`);
+        });
     }
 
-    // @todo: move to helpers file
-    const showNotification = (type: 'delete' | 'create' | 'error', record: Record) => {
-        switch (type) {
-            case 'delete':
-                message.success(`${record.type == 'income' ? 'Доход ' : 'Расход -'}${record.amount} удален!`)
-                break;
-            case 'create':
-                message.success(`${record.type == 'income' ? 'Доход ' : 'Расход -'}${record.amount} добавлен!`)
-                break;
-
-            default:
-                break;
-        }
+    const changeRecordCategoryEvent = ({record, category}: {record: Record, category: string}) => {
+        changeRecordCategory(record.id, category).then(() => {
+            messageApi.success('Категория изменена');
+        })
     }
-
 </script>
