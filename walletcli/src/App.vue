@@ -2,10 +2,7 @@
     <div class="terminal">
         <div class="terminal-content" id="terminal-content">
             <div class="output info-text">
-                Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)<br>
-                * Documentation: https://help.ubuntu.com<br>
-                * Management: https://landscape.canonical.com<br>
-                * Support: https://ubuntu.com/advantage<br>
+                Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-89-generic x86_64)<br><br>
             </div>
             <Prompt />
         </div>

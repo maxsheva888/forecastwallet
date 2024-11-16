@@ -23,11 +23,12 @@ export function useWallet() {
         const data: Transaction[] = getTransactions(() => true);
 
         wallet.transactions = data;
+        wallet.balance = data.reduce((acc, t) => t.type === 'expense' ? acc - t.amount : acc + t.amount, 0);
     };
 
     const addTransactionToWallet = (transaction: Transaction): StorageResponse => {
 
-        if (!addTransaction(transaction)) { 
+        if (!addTransaction(transaction)) {
             return {
                 success: false,
                 message: 'Transaction not added to storage',

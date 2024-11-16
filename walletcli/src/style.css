@@ -1,6 +1,6 @@
 
 :root {
-    --background: #282a36;
+    --background:  #1c1c1c /*#282a36;*/;
     --current-line: #44475a;
     --selection: #44475a;
     --foreground: #f8f8f2;

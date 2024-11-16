@@ -1,7 +1,5 @@
 import moment from "moment";
 import { Command } from "../../types/command";
-import { Transaction } from "../../types/transaction";
-import { useHash } from "../utils/useHash";
 import { useWallet } from "../wallet/useWallet";
 
 
@@ -43,7 +41,7 @@ export const walletList: Command = {
         '-i': 'Income',
     },
     execute: (args, options) => {
-        const { getTransactions } = useWallet();
+        const { getTransactions, wallet } = useWallet();
 
         const limit = Number(options['-l'] ?? 2);
 
@@ -55,11 +53,33 @@ export const walletList: Command = {
             }
         }
 
-        const getAmountColor = (t: string) => t === 'expense' ? '--red' : '--green';
+        // Limit transactions
+        transactions = transactions.slice(0, limit);
 
-        const output = transactions.slice(0, limit).map((t, index) => 
-            `${index + 1}. ${t.id.substring(0, 8)} [${t.date}] <span style="color: var(${getAmountColor(t.type)})">${t.amount}</span> | ${t.category ?? '-' } [${t.tags.join(', ')}]`
+
+        const grey = '<span style="color: var(--comment)">';
+        const output = transactions.map(t =>
+            '{1} {grey}{2}{endspan}    {color}{3}{endspan} {color}{4}{endspan} {cyan}{5}{endspan}'.format({
+                color: '<span style="color: var({color})">'.format({color: t.type === 'expense' ? '--red' : '--green'}),
+                grey,
+                cyan: '<span style="color: var(--cyan)">',
+                endspan: '</span>',
+                1: t.date,
+                2: t.id.substring(0, 8),
+                3: t.type === 'expense' ? '▼' : '▲',
+                4: '{1}{2}'.format({ 1: t.amount, 2: '&nbsp;'.repeat(10 - t.amount.toString().length) }),
+                5: [t.category, ...t.tags].join(' #')
+            })
         );
+
+        output.unshift('{grey}{d}</span>'.format({ grey, d: '-'.repeat(50) }));
+        output.push('{grey}{d}</span>'.format({ grey, d: '-'.repeat(50) }));
+        output.push(`{grey}balance: {balance} | total: ▲{i} ▼{e}<span> `.format({
+            grey,
+            balance: wallet.value.balance,
+            i: transactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0),
+            e: transactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0),
+        }));
 
         return output;
     }

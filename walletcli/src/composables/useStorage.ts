@@ -1,5 +1,5 @@
 import { Transaction } from "../types/transaction";
-import { useDatabase } from "./db/useDatabase";
+import { IDatabase, useDatabase } from "./db/useDatabase";
 
 export type StorageResponse = {
     success: boolean;
@@ -12,12 +12,14 @@ interface IStorage {
     removeTransaction: (id: string) => Transaction;
 }
 
-const { db: storage } = useDatabase();
+const { db: storage, commit }: IDatabase = useDatabase();
 
 export function useStorage(): IStorage {
 
     const addTransaction = (transaction: Transaction): StorageResponse => {
         storage.transactions.push(transaction);
+
+        commit();
 
         return { success: true };
     };
@@ -32,7 +34,11 @@ export function useStorage(): IStorage {
             throw new Error(`Transaction with id ${id} not found`);
         }
 
-        return storage.transactions.splice(index, 1).at(0)!;
+        const removedT: Transaction = storage.transactions.splice(index, 1).at(0)!;
+
+        commit();
+
+        return removedT;
     };
 
     return {

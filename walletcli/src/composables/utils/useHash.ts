@@ -11,3 +11,15 @@ export function useHash () {
 
     return { hash };
   }
+
+declare global {
+    interface String {
+        format: (...args: any[]) => string;
+    }
+}
+
+String.prototype.format = function (args: { [key: string]: any }): string {
+    return this.replace(/{(\w+)}/g, (match, key) => {
+        return typeof args[key] != 'undefined' ? args[key] : match;
+    });
+};

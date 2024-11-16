@@ -42,7 +42,6 @@ const { history, waiting } = useTerminal()
 
 .command-output {
     color: #fff;
-    margin-left: 5px;
 }
 
 

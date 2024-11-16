@@ -1,4 +1,4 @@
-/**
+
     Add command
 
     Basic Commands:
@@ -96,4 +96,8 @@
                 $ wallet list -c food -pc
 
                     1. 83hks83h [07-11-2024] 200 | food [lunch, fastfood]
-*/
+
+User API:
+
+    login:
+    

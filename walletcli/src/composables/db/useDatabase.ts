@@ -1,8 +1,12 @@
-import { onMounted, reactive } from "vue";
+import { reactive } from "vue";
 import { Storage } from "../../types/storage";
 import { type Transaction } from "../../types/transaction";
 
 
+export interface IDatabase {
+    db: Storage;
+    commit: () => void;
+}
 
 
 export function useDatabase() {
@@ -11,13 +15,16 @@ export function useDatabase() {
     });
 
     const loadDatabase = async () => {
-        const data: Transaction[] = []; //await fetchDatabase();
+        const data: Transaction[] = JSON.parse(localStorage.getItem('transactions') ?? '') ?? [];
         db.transactions = data;
     };
 
-    onMounted(() => {
-        loadDatabase();
-    });
+    const commit = () => {
+        localStorage.setItem('transactions', JSON.stringify(db.transactions));
+    }
 
-    return { db };
+    console.log('Database loaded');
+    loadDatabase();
+
+    return { db, commit };
 }
